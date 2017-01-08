@@ -1,0 +1,181 @@
+% Preambuła
+\documentclass[a4paper,10pt,fleqn]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[polish]{babel}
+\usepackage[OT4]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{rotating}
+
+% Część główna
+\title{Optymalizacja Wspomagania Decyzji\\Sprawozdanie z projektu}
+\author{Andrzej Smyk}
+\begin{document}
+	\maketitle
+	\section{Model}
+		\subsection{Założenia}
+		W stworzonym modelu poczyniono pewne wstępne założenia:
+		\begin{itemize}
+			\item generatory rozpoczynają pracę na początku pierwszej pory doby (pierwszego okresu), tj. o godzinie 00:00;
+			\item na początku każdego okresu określany jest stan danej grupy generatorów: czy jest uruchamiany, czy nie;
+			\item uruchomione generatory działa przez całą porę;
+			\item w trakcie danej pory generator utrzymuje stałe obciążenie, tj. nie zmienia się ono z godziny na godzinę;
+		\end{itemize}
+
+		\subsection{Zmienne decyzyjne}
+		Zmienne ilościowe (w tonach):
+		\begin{description}[align=left,labelwidth=1.5cm]
+			\item[$S1$] ilość surowca $S1$
+			\item[$S2$] ilość surowca $S2$
+			\item[$D1$] ilość półproduktu $D1$
+			\item[$D2$] ilość półproduktu $D2$
+			\item[$D3$] ilość półproduktu $D3$
+			\item[$K1$] ilość półproduktu $K1$
+			\item[$K2$] ilość półproduktu $K2$
+			\item[$D2K$] ilość półproduktu $D2$ wykorzystanego w procesie uwodornienia
+			\item[$D3K$] ilość półproduktu $D3$ wykorzystanego w procesie uwodornienia
+			\item[$D1P1$] ilość półproduktu $D1$ wykorzystanego w produkcji $P1$
+			\item[$D1P3$] ilość półproduktu $D1$ wykorzystanego w produkcji $P3$
+			\item[$D2P2$] ilość półproduktu $D2$ wykorzystanego w produkcji $P2$
+			\item[$D3P2$] ilość półproduktu $D3$ wykorzystanego w produkcji $P2$
+			\item[$K1P1$] ilość półproduktu $K1$ wykorzystanego w produkcji $P1$
+			\item[$K2P1$] ilość półproduktu $K2$ wykorzystanego w produkcji $P1$
+			\item[$K1P2$] ilość półproduktu $K1$ wykorzystanego w produkcji $P2$
+			\item[$K2P2$] ilość półproduktu $K2$ wykorzystanego w produkcji $P2$
+		\end{description}
+
+		\subsection{Parametry}
+		wyboru optymalnej wartość obciążenia poszczególnych grup generatorów dokonamy na podstawie zmiennych zewnętrznych:
+
+		W nawiasach podano jednostki.
+
+		\subsection{Ograniczenia}
+
+		Dostępność surowców:
+		\begin{subequations}
+			\begin{equation}
+				0 \leq S1 \leq 9000
+			\end{equation}
+			\begin{equation}
+				0 \leq S2 \leq 12000
+			\end{equation}
+		\end{subequations}
+
+		Całkowita dzienna przepustowość przygotowalni:
+		\begin{equation}
+			S1 + S2 \leq 14722
+		\end{equation}
+
+		Ilości półproduktów $D1$, $D2$, $D3$ w zależności od surowca:
+		\begin{subequations}
+			\begin{equation}
+				-0.2S1 - 0.1S2 + D1 = 0
+			\end{equation}			
+			\begin{equation}
+				-0.5S1 - 0.7S2 + D2 = 0
+			\end{equation}
+			\begin{equation}
+				-0.3S1 - 0.2S2 + D3 = 0
+			\end{equation}
+		\end{subequations}
+
+		Całkowita dzienna przepustowość zakładu uwodorowienia:
+		\begin{equation}
+			K1 + K2 \leq 5454
+		\end{equation}
+
+		Półprodukty $D2$ i $D3$ mogą zostać wykorzystane do bezpośredniej produkcji $P2$ lub przeznaczone do dalszej obróbki w zakładzie uwodorowienia:
+		\begin{subequations}
+			\begin{equation}
+				-D2P2 - D2K + D2 = 0
+			\end{equation}
+			\begin{equation}
+				-D3P2 - D3K + D3 = 0
+			\end{equation}
+		\end{subequations}
+
+		Ilości poszczególnych półproduktów $K1$ i $K2$ w zależności od wykorzystanych półproduktów $D2$ oraz $D3$:
+		\begin{subequations}
+			\begin{equation}
+				-0.1D3K -0.4D3K + K1 = 0
+			\end{equation}
+			\begin{equation}
+				-0.9D3K -0.6D3K + K2 = 0
+			\end{equation}
+		\end{subequations}
+
+		Do produkcji $P1$ mogą zostać wykorzystane półprodukty $D1$, $K1$ oraz $K2$:
+		\begin{equation}
+			-P1 + D1P1 + K1P1 + K2P1 = 0 
+		\end{equation}
+
+		Do produkcji $P2$ mogą zostać wykorzystane półprodukty $D2$, $D3$, $K1$ oraz $K2$:
+		\begin{equation}
+			-P2 + D2P2 + D3P2 + K1P2 + K2P2 = 0 
+		\end{equation}
+
+		Do produkcji $P3$ może zostać wykorzystany połprodukt $D1$:
+		\begin{equation}
+			-P3 + D1P3 = 0 
+		\end{equation}
+
+		Półprodukt $D_1$ może zostać wykorzystany do produkcji $P1$ oraz $P3$:
+		\begin{equation}
+			-D1 + D1P1 + D1P3 = 0
+		\end{equation}
+
+		Półprodukt $K_1$ może zostać wykorzystany do produkcji $P1$ oraz $P2$:
+		\begin{equation}
+			-K1 + K1P1 + K1P2 = 0
+		\end{equation}
+
+		Półprodukt $K2$ może zostać wykorzystany do produkcji $P1$ oraz $P2$:
+		\begin{equation}
+			-K2 + K2P1 + K2P2 = 0
+		\end{equation}
+
+		Zawarte umowy wymagają dostarczenia co najmniej 3495 ton każdego z produktów:
+		\begin{subequations}
+			\begin{equation}
+				P1 \geq 3495
+			\end{equation}
+			\begin{equation}
+				P2 \geq 3495
+			\end{equation}
+			\begin{equation}
+				P3 \geq 3495
+			\end{equation}
+		\end{subequations}
+
+		Jeśli zakład uwodorowienia pracuje to dzienny koszt jego pracy wynosi 13000, w innym wypadku 0:
+		\begin{subequations}
+			\begin{equation}
+				0 \leq K1 + K2 \leq 5454w
+			\end{equation}
+			\begin{equation}
+				0 \leq w \leq 1 \qquad w \in Z
+			\end{equation}
+		\end{subequations}
+
+		
+
+	\section{Model w AMPL}
+		Problem doboru odpowiedniego obciążenia poszczególnych generatorów można przedstawić jako dwukryterialny model kosztu i ryzyka. odchylenie przeciętne $\delta(x) = \sum\limits_{t=1}^T |\mu(x)-r_t(x)| p_t$, gdzie $\mu(x)$ oznacza średnią, $r_t(x)$ realizację dla scenariusz $t$, a $p_t$ jego prawdopodobieństwo.Zarówno koszt, którego miarą jest średnia, jaki i ryzyko są minimalizowane. Tak zdefiniowany problem możemy zapisać jako:
+		\begin{equation}
+			min\{[\mu(x), \delta(x)] : \quad x \in Q\}
+		\end{equation}
+		gdzie $Q$ jest wielościennym, wypukłym i ograniczonym zbiorem dopuszczalnym.
+
+		
+		\section{Symulacja}
+			\subsection{Obraz zbioru rozwiązań efektywnych}
+				
+
+			\subsection{Sprawdzenie relacji dominacji stochastycznej pierwszego rzędu}
+				Jak widać na wykresie 2, rozwiązanie 3 dominuje w sensie dominacji stochastycznej
+				pierwszego rzędu pozostałe dwa rozwiązania. Rozwiązanie 2 jest zdominowane
+				w sensie dominacji stochastycznej pierwszego rzędu zarówno przez rozwiązanie 1 oraz 3.
+				Każdy racjonalny decydent wybierze rozwiązanie minimalnego kosztu.
+\end{document}
