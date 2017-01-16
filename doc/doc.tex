@@ -1,181 +1,340 @@
 % Preambuła
 \documentclass[a4paper,10pt,fleqn]{article}
+\usepackage{fullpage}
+\usepackage{lscape}	
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage[polish]{babel}
 \usepackage[OT4]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{enumitem}
-\usepackage{graphicx}
 \usepackage{rotating}
 
 % Część główna
 \title{Optymalizacja Wspomagania Decyzji\\Sprawozdanie z projektu}
 \author{Andrzej Smyk}
 \begin{document}
-	\maketitle
+\maketitle
+	\section{Skrócona treść zadania}
+		{\bf OD \hfill Dane nr 20\\\hfill}
+		\\\hfill
+		Zakłady chemiczne produkują 3 rodzaje produktów: P1, P2, P3. Wykorzystuje się do tego dwa rodzaje surowca S1 i S2 dostępnego w ilościach,
+		odpowiednio 9000 12000 ton dziennie. Ceny Surowca S1 i S2 wynoszą, odpowiednio 140 i 110 zł za tonę.
+
+		Surowce są poddawane wstępnej obróbce w przygotowalni o całkowitej dziennej przepustowości 14722 ton. 
+		w wyniku tego powstają trzy półprodukty: D1,D2 i D3. Ilość poszczególnych półproduktów w zależności 
+		od surowca kształtuje się następująco 
+
+		\begin{center}
+		    \begin{tabular}{ | c | c | c | c |}
+		    \hline
+		    Surowiec & D1 & D2 & D3 \\ \hline
+			S1 & 0,2 & 0,5 & 0,3 \\ \hline
+			S2 & 0,1 & 0,7 & 0,2 \\ \hline
+		    \end{tabular}
+		\end{center}
+
+		D1 może być bezpośrednio użyty do produkcji P1 i P3. Natomiast D2 i D3 mogą być wykorzystane
+		do bezpośredniej produkcji P2 lub przeznaczone do dalszej obróbki w zakładzie uwodornienia. Koszt przygotowania surowca zależny jest od wielkości 
+		dziennego przerobu danego surowca i jest przedstawiony w tabeli poniżej
+
+		\begin{center}
+		    \begin{tabular}{ | l | l | l |}
+		    \hline
+		    & Dzienny przerób & Koszt przygotowania \\ \hline
+			S1 & od 1860 ton włącznie & 12zł/tonę \\ \hline
+			& od 1860 do 5398 włącznie & 1860*19zł+14zł za każdą tonę powyżej progu 1860 ton \\ \hline
+			& od 5398 & 1860*19zł+(5398-1860)*14zł+10zł za każdą tonę powyżej progu 5398 ton \\ \hline
+			S2 & od 3694 ton włącznie & 12zł/tonę \\ \hline
+			& od 3694 do 8013 włącznie & 3694*12zł+16zł za każdą tonę powyżej progu 3694 ton \\ \hline
+			& od 8013 & 3694*12zł+(8013-3694)*16zł+20zł za każdą tonę powyżej progu 8013 ton \\ \hline
+		    \end{tabular}
+		\end{center}
+
+		Zakład uwodornienia o przepustowości dziennej 5454 ton wytwarza półprodukty K1 i K2. Ilość poszczególnych półproduktów w zależności od surowca kształtuje się następująco
+
+		\begin{center}
+		    \begin{tabular}{ | c | c | c |}
+		    \hline
+		    Półprodukt & D2 & D3 \\ \hline
+			K1 & 0,1 & 0,4 \\ \hline
+			K2 & 0,9 & 0,6 \\ \hline
+		    \end{tabular}
+		\end{center}
+
+		Półprodukty Ki i K2 mogą być użyte do produkcji P1 lub P2, ale nie mogą być użyte do wytworzenia P3. Jeśli 
+		kład uwodornienia pracuje, dzienny koszt jego pracy (niezależnie od ilości przetworzonych produktów) wynosi
+		13 tys. zł. Jeśli nie pracuje, dzienny koszt jest zerowy. Cena sprzedaży hurtowej wynosi: 176 zł/tonę P1, 140 zł/tonę i
+		109 zł/tonę P3. Zawarte umowy wymagają dostarczenia co najmniej 3495 ton każdego produktu.
+
+		Dany produkt finalny jest wytwarzany z półproduktów D1, D2, D3, K1 lub K2 bezpośrednio bez utraty masy, jednak zgodnie
+		z zasadami opisanymi wcześniej.
+
+		Należy zaprojektować system wspomagania decyzji, w którym są 4 kryteria: całkowity koszt produkcji oraz względne niedobory
+		każdego produktu. System powinien wykorzystywać metodę punktu odniesienia do agregacji kryteriów.
+
 	\section{Model}
-		\subsection{Założenia}
-		W stworzonym modelu poczyniono pewne wstępne założenia:
+		W stworzonym modelu, zgodnie z tym co zostało opisane w treśici zadania, wszystkie pólprodukty i produkty wytwarzane są bez utraty masy, tj. ilość półproduktu/surowca wejściowego musi byc równa ilości półproduktu/produktu wyjściowego.
 		\begin{itemize}
-			\item generatory rozpoczynają pracę na początku pierwszej pory doby (pierwszego okresu), tj. o godzinie 00:00;
-			\item na początku każdego okresu określany jest stan danej grupy generatorów: czy jest uruchamiany, czy nie;
-			\item uruchomione generatory działa przez całą porę;
-			\item w trakcie danej pory generator utrzymuje stałe obciążenie, tj. nie zmienia się ono z godziny na godzinę;
+			\item ;
 		\end{itemize}
 
 		\subsection{Zmienne decyzyjne}
+
 		Zmienne ilościowe (w tonach):
 		\begin{description}[align=left,labelwidth=1.5cm]
-			\item[$S1$] ilość surowca $S1$
-			\item[$S2$] ilość surowca $S2$
-			\item[$D1$] ilość półproduktu $D1$
-			\item[$D2$] ilość półproduktu $D2$
-			\item[$D3$] ilość półproduktu $D3$
-			\item[$K1$] ilość półproduktu $K1$
-			\item[$K2$] ilość półproduktu $K2$
-			\item[$D2K$] ilość półproduktu $D2$ wykorzystanego w procesie uwodornienia
-			\item[$D3K$] ilość półproduktu $D3$ wykorzystanego w procesie uwodornienia
-			\item[$D1P1$] ilość półproduktu $D1$ wykorzystanego w produkcji $P1$
-			\item[$D1P3$] ilość półproduktu $D1$ wykorzystanego w produkcji $P3$
-			\item[$D2P2$] ilość półproduktu $D2$ wykorzystanego w produkcji $P2$
-			\item[$D3P2$] ilość półproduktu $D3$ wykorzystanego w produkcji $P2$
-			\item[$K1P1$] ilość półproduktu $K1$ wykorzystanego w produkcji $P1$
-			\item[$K2P1$] ilość półproduktu $K2$ wykorzystanego w produkcji $P1$
-			\item[$K1P2$] ilość półproduktu $K1$ wykorzystanego w produkcji $P2$
-			\item[$K2P2$] ilość półproduktu $K2$ wykorzystanego w produkcji $P2$
+			\item[$S_i$] ilości surowca $S$, $i = 1,2$
+			\item[$s_{ij}$] ilości surowca $S$ dla różnych progów kosztu przygotowania, gdzie $i$ to numer surowca, $j$ numer progu
+			\item[$D_i$] ilości półproduktów $D$, $i = 1, 2, 3$
+			\item[$K_i$] ilość półproduktów $K$, $i = 1, 2$
+			\item[$DK_2$] ilość półproduktu $D2$ wykorzystanego w procesie uwodornienia
+			\item[$DK_3$] ilość półproduktu $D3$ wykorzystanego w procesie uwodornienia
+			\item[$DP_{ij}$] ilość półproduktu $D_i$ wykorzystanego w produkcji $P_j$, \\$i=1, 2, 3 \quad j=1, 2, 3$
+	
+			\item[$KP_{ij}$] ilość półproduktu $K_i$ wykorzystanego w produkcji $P_i$, \\$i=1, 2\quad j=1, 2$
 		\end{description}
 
-		\subsection{Parametry}
-		wyboru optymalnej wartość obciążenia poszczególnych grup generatorów dokonamy na podstawie zmiennych zewnętrznych:
-
-		W nawiasach podano jednostki.
+		Zmienne binarne (flagi dodatności):
+		\begin{description}[align=left,labelwidth=1.5cm]
+			\item[$w$] flaga pracy zakładu uwodorowienia
+			\item[$u_{ij}$] flaga progów kosztu przygotowania surowców $S_1$ i $S_2$, \\$i = 1, 2 \quad j = 1, 2$
+		\end{description}
 
 		\subsection{Ograniczenia}
 
 		Dostępność surowców:
 		\begin{subequations}
 			\begin{equation}
-				0 \leq S1 \leq 9000
+				0 \leq S_1 \leq 9000
 			\end{equation}
 			\begin{equation}
-				0 \leq S2 \leq 12000
+				0 \leq S_2 \leq 12000
 			\end{equation}
 		\end{subequations}
 
 		Całkowita dzienna przepustowość przygotowalni:
 		\begin{equation}
-			S1 + S2 \leq 14722
+			D_1 + D_2 + D_3 \leq 14722
 		\end{equation}
 
-		Ilości półproduktów $D1$, $D2$, $D3$ w zależności od surowca:
+		Ilości półproduktów $D_1$, $D_2$, $D_3$ w zależności od surowca:
 		\begin{subequations}
 			\begin{equation}
-				-0.2S1 - 0.1S2 + D1 = 0
+				 D_1 = 0.2S_1 + 0.1S_2
 			\end{equation}			
 			\begin{equation}
-				-0.5S1 - 0.7S2 + D2 = 0
+				D_2 = 0.5S_1 + 0.7S_2
 			\end{equation}
 			\begin{equation}
-				-0.3S1 - 0.2S2 + D3 = 0
+				D_3 = 0.3S_1 + 0.2S_2
 			\end{equation}
 		\end{subequations}
 
 		Całkowita dzienna przepustowość zakładu uwodorowienia:
 		\begin{equation}
-			K1 + K2 \leq 5454
+			K_1 + K_2 \leq 5454
 		\end{equation}
 
-		Półprodukty $D2$ i $D3$ mogą zostać wykorzystane do bezpośredniej produkcji $P2$ lub przeznaczone do dalszej obróbki w zakładzie uwodorowienia:
+		Półprodukty $D_2$ i $D_3$ mogą zostać wykorzystane do bezpośredniej produkcji $P2$ lub przeznaczone do dalszej obróbki w zakładzie uwodorowienia:
 		\begin{subequations}
 			\begin{equation}
-				-D2P2 - D2K + D2 = 0
+				D_2 = DP_{22} + DK_2
 			\end{equation}
 			\begin{equation}
-				-D3P2 - D3K + D3 = 0
+				D_3 = DP_{32} + DK_3
 			\end{equation}
 		\end{subequations}
 
-		Ilości poszczególnych półproduktów $K1$ i $K2$ w zależności od wykorzystanych półproduktów $D2$ oraz $D3$:
+		Ilości poszczególnych półproduktów $K_1$ i $K_2$ w zależności od wykorzystanych półproduktów $D_2$ oraz $D_3$:
 		\begin{subequations}
 			\begin{equation}
-				-0.1D3K -0.4D3K + K1 = 0
+				K_1 = 0.1DK_2 + 0.4DK_3
 			\end{equation}
 			\begin{equation}
-				-0.9D3K -0.6D3K + K2 = 0
+				K_2 = 0.9DK_2 + 0.6DK_3
 			\end{equation}
 		\end{subequations}
 
-		Do produkcji $P1$ mogą zostać wykorzystane półprodukty $D1$, $K1$ oraz $K2$:
+		Do produkcji $P1$ mogą zostać wykorzystane półprodukty $D_1$, $K_1$ oraz $K_2$:
 		\begin{equation}
-			-P1 + D1P1 + K1P1 + K2P1 = 0 
+			P_1 = DP_{11} + KP_{11} + KP_{21}
 		\end{equation}
 
-		Do produkcji $P2$ mogą zostać wykorzystane półprodukty $D2$, $D3$, $K1$ oraz $K2$:
+		Do produkcji $P2$ mogą zostać wykorzystane półprodukty $D_2$, $D_3$, $K_1$ oraz $K_2$:
 		\begin{equation}
-			-P2 + D2P2 + D3P2 + K1P2 + K2P2 = 0 
+			P_2 = DP_{22} + DP_{32} + KP_{12} + KP_{22} 
 		\end{equation}
 
-		Do produkcji $P3$ może zostać wykorzystany połprodukt $D1$:
+		Do produkcji $P_3$ może zostać wykorzystany połprodukt $D_1$:
 		\begin{equation}
-			-P3 + D1P3 = 0 
+			P_3 = DP_{13}
 		\end{equation}
 
-		Półprodukt $D_1$ może zostać wykorzystany do produkcji $P1$ oraz $P3$:
+		Półprodukt $D_1$ może zostać wykorzystany do produkcji $P_1$ oraz $P_3$:
 		\begin{equation}
-			-D1 + D1P1 + D1P3 = 0
+			D_1 = DP_{11} + DP_{13}
 		\end{equation}
 
-		Półprodukt $K_1$ może zostać wykorzystany do produkcji $P1$ oraz $P2$:
+		Półprodukt $K_1$ może zostać wykorzystany do produkcji $P_1$ oraz $P_2$:
 		\begin{equation}
-			-K1 + K1P1 + K1P2 = 0
+			K_1 = KP_{11} + KP_{12}
 		\end{equation}
 
-		Półprodukt $K2$ może zostać wykorzystany do produkcji $P1$ oraz $P2$:
+		Półprodukt $K2$ może zostać wykorzystany do produkcji $P_1$ oraz $P_2$:
 		\begin{equation}
-			-K2 + K2P1 + K2P2 = 0
+			K_2 = KP_{21} + KP_{22}
 		\end{equation}
 
-		Zawarte umowy wymagają dostarczenia co najmniej 3495 ton każdego z produktów:
+		Jeśli zakład uwodorowienia pracuje to dzienny koszt jego pracy wynosi 13000 zł., w innym wypadku 0:
 		\begin{subequations}
 			\begin{equation}
-				P1 \geq 3495
-			\end{equation}
-			\begin{equation}
-				P2 \geq 3495
-			\end{equation}
-			\begin{equation}
-				P3 \geq 3495
-			\end{equation}
-		\end{subequations}
-
-		Jeśli zakład uwodorowienia pracuje to dzienny koszt jego pracy wynosi 13000, w innym wypadku 0:
-		\begin{subequations}
-			\begin{equation}
-				0 \leq K1 + K2 \leq 5454w
+				0 \leq K_1 + K_2 \leq 5454w
 			\end{equation}
 			\begin{equation}
 				0 \leq w \leq 1 \qquad w \in Z
 			\end{equation}
 		\end{subequations}
 
+		Koszt przygotowania surowca zależny jest od wielkości dziennego przerobu danego surowca:
+		\begin{itemize}
+			\item $S_1$ (koszty malejący):
+				\begin{subequations}
+					\begin{equation}
+						 S_{1} = s_{11} + s_{12} + s_{13}
+					\end{equation}	
+					\begin{equation}
+						1860u_{11} \leq s_{11} \leq 1860
+					\end{equation}
+					\begin{equation}
+						(5398-1860)u_{12} \leq s_{12} \leq (5398-1860)u_{11}
+					\end{equation}
+					\begin{equation}
+						0 \leq s_{13} \leq (9000-5398)u_{12}
+					\end{equation}
+					\begin{equation}
+						0 \leq u_{1i} \leq 1 \quad u_{i} \in Z \quad i = 1, 2
+					\end{equation}
+				\end{subequations}	
+			\item  $S_2$ (koszty rosnące):
+				\begin{subequations}
+					\begin{equation}
+						 S_2 = s_{21} + s_{22} + s_{23}	
+					\end{equation}	
+					\begin{equation}
+						3694u_{21} \leq s_{11} \leq 3694
+					\end{equation}
+					\begin{equation}
+						( 8013 - 3694)u_{22} \leq s_{12} \leq ( 8013 - 3694)u_{21}
+					\end{equation}
+					\begin{equation}
+						0 \leq s_{13} \leq ( 8013 - 3694)u_{22}
+					\end{equation}
+					\begin{equation}
+						0 \leq u_{2i} \leq 1 \quad u_{i} \in Z \quad i = 1, 2
+					\end{equation}
+				\end{subequations}	
+		\end{itemize}
 		
+		\subsection{Kryteria}
+		Całkowity koszt produkcji składa się z:
+		\begin{itemize}
+			\item kosztu surowców $S_1$ oraz $S_2$:
+				\begin{equation}
+					c_S = 140S_1 + 110S_2
+				\end{equation}
+			\item stałego kosztu pracy zakładu uwodorowienia:
+				\begin{equation}
+					c_w = 13000*w
+				\end{equation}
+			\item kosztu przygotowania surowca $S_1$:
+				\begin{equation}
+					c_{s1} = 12s_{11} + 8s_{12} + 5s_{13}
+				\end{equation}
+			\item kosztu przygotowania surowca $S_2$:
+				\begin{equation}
+					c_{s2} = 12s_{21} + 16s_{22} + 21s_{23}
+				\end{equation}
+		\end{itemize}
+
+		Po zsumowaniu wszystkich składników, całkowity koszt wygląda następująco:
+		\begin{equation}
+			\begin{split}
+				y_1 &= c_w + c_{s1} + c_{s2} + c_s \\
+			& = 13000w + 12s_{11} + 8s_{12} + 5s_{13} + 12s_{21} + 16s_{22} + 21s_{23} + 140S_1 + 110S_2
+			\end{split}
+		\end{equation}
+
+		Względny niedobór produktów $P_1$, $P_2$, $P_3$:
+		\begin{subequations}
+			\begin{equation}
+				y_{2}= \frac{3495-P_1}{3495}
+			\end{equation}
+			\begin{equation}
+				y_{3}= \frac{3495-P_2}{3495}
+			\end{equation}
+			\begin{equation}
+				y_{4}= \frac{3495-P_3}{3495}
+			\end{equation}
+		\end{subequations}
+
+		\subsection{Metoda punktu odniesienia}
+
+		Jako wartość parametru regulacji $\epsilon$ jest ustalona jako $\sigma/\text{m}$, gdzie $m$ jest liczbą kryterów zaś $\sigma$ arbitralnie dobraną małą stałą. Jako czynnik $\beta$ przyjęto typową wartość $10^{-3}$. Wszystkie mnożniki $\lambda$ ustalono na $1$.
+		\\\hfill
+		Parametry dla metody punktu odniesienia:
+		\begin{flalign*}
+			& \sigma = 10^{-4} \\
+			& \varepsilon = \frac{\sigma}{m}=0.00025 \\
+			& \lambda_{ij} = 1 \qquad\text{dla} \quad i=1 \dots 4, \quad j=1 \dots 4  \\
+			& \beta=10^{-3}
+		\end{flalign*}
+		
+		Inżynierska aimplementacja metody punktu odniesienia:
+		\begin{flalign*}
+			\text{max} \quad  & v + \varepsilon\sum_{i=1}^{m}{z_i} \\
+			& v \leq z_i \qquad i =1\dots m \\
+			& z_i \leq \beta\lambda_i(y_i - a_i)\qquad i =1\dots m \\
+			& z_i \leq \lambda_i(y_i - a_i)\qquad i =1\dots m
+		\end{flalign*}
 
 	\section{Model w AMPL}
-		Problem doboru odpowiedniego obciążenia poszczególnych generatorów można przedstawić jako dwukryterialny model kosztu i ryzyka. odchylenie przeciętne $\delta(x) = \sum\limits_{t=1}^T |\mu(x)-r_t(x)| p_t$, gdzie $\mu(x)$ oznacza średnią, $r_t(x)$ realizację dla scenariusz $t$, a $p_t$ jego prawdopodobieństwo.Zarówno koszt, którego miarą jest średnia, jaki i ryzyko są minimalizowane. Tak zdefiniowany problem możemy zapisać jako:
-		\begin{equation}
-			min\{[\mu(x), \delta(x)] : \quad x \in Q\}
-		\end{equation}
-		gdzie $Q$ jest wielościennym, wypukłym i ograniczonym zbiorem dopuszczalnym.
+		Wszystkie pliki potrzebne do przeprowadzenia symulacji znajdują się w katalogi \texttt{src}.
+		Model został zapisany w pliku \texttt{model.mod}, zaś symulację można uruchomić za pomocą pliku \texttt{owd.run}. Wszystkie ograniczenia w modelu zawierają w nazwach odpowiednie numery konkretnych równań ze sprawozdania.
 
 		
-		\section{Symulacja}
-			\subsection{Obraz zbioru rozwiązań efektywnych}
+	\section{Symulacja}
+		\begin{landscape}
+			\begin{center}
+			    \begin{tabular}{ | l | c | c | c | c | c | c | c | c |c |}
+			    \hline
 				
+			    $a$ & $S$ & $D$ & $K$ & $P$ & Koszt & $RD_{1}$  & $RD_{2}$ & $RD_{3}$ & Zysk \\ \hline
 
-			\subsection{Sprawdzenie relacji dominacji stochastycznej pierwszego rzędu}
-				Jak widać na wykresie 2, rozwiązanie 3 dominuje w sensie dominacji stochastycznej
-				pierwszego rzędu pozostałe dwa rozwiązania. Rozwiązanie 2 jest zdominowane
-				w sensie dominacji stochastycznej pierwszego rzędu zarówno przez rozwiązanie 1 oraz 3.
-				Każdy racjonalny decydent wybierze rozwiązanie minimalnego kosztu.
+			    	[[2000000, 1.0000, 1.0000, 1.0000] &  [9000, 5720] & [2372, 8504, 3844] & [1698, 3756] & [6894, 6894, 932] & 2047578 & -0.9725  & -0.9725  & 0.7333  & 232514  \\ \hline
+
+			    	[2000000, 0.0000, 0.0000, 0.0000] &  [9000, 5720] & [2372, 8504, 3844] & [1698, 3756] & [5454, 6894, 2372] & 2047578 & -0.5605  & -0.9725  & 0.3213  & 136034 \\ \hline
+
+				[[2000000, -3.0000, -3.0000, -3.0000] &  [9000, 5720] & [2372, 8504, 3844] & [546, 4908] & [7826, 6894, 0] & 2047578 & -1.2392  & -0.9725  & 1.0000  & 294957  \\  \hline
+				
+				[0, -1.633, -0.699, 0.065] &  [10990, 1940] & [4590, 4849, 3491] & [5004, 3336] & [8657, 4043, 230] & 1841761 & -0.760  & 0.177  & 0.953  & 401888 \\  \hline
+				 [1800000, -1.633, -0.699, 0.065] &  [10760, 2110] & [4515, 4916, 3439] & [5013, 3342] & [8664, 4004, 202] & 1831077 & -0.762  & 0.1857  & 0.958  & 405819 \\  \hline
+				 [1800000, -2, -0.699, 0.065] &  [10750, 2100] & [4510, 4905, 3435] & [5004, 3336] & [9107, 3743, 0] & 1828273 & -0.852  & 0.238  & 1  & 438426 \\  \hline
+				 [1800000, -3, -0.699, 0.065] &  [11000, 1950] & [4595, 4860, 3495] & [5013, 3342] & [12950, 0, 0] & 1844461 &  -1.633  & 1  & 1  & 654889 \\  \hline
+				 [1500000, -1.633, -0.699, 0.065] &  [10970, 1970] & [4585, 4867, 3488] & [5013, 3342] & [8626, 4042, 272] & 184284 & -0.754  & 0.1780  & 0.944  & 398881 \\  \hline
+				 [1500000, -1, -1, -1] &  [11000, 1950] & [4595, 4860, 3495] & [5013, 3342] & [4310, 4320, 4320] & 1844461 & 0.123  & 0.121  & 0.121  & 6889\\ \hline
+				 [1800000, 0, 0, 0] &  [11000, 1950] & [4595, 4860, 3495] & [5013, 3342] & [4310, 4320, 4320] & 1844461 & 0.123  & 0.121  & 0.121  & 6889 \\ \hline
+				 [1800000, 0, 0.5, 0.5] &  [10970, 1970] & [4585, 4867, 3488] & [5013, 3342] & [6020, 3494, 3426] & 1842837 & -0.224  & 0.289  & 0.303  & 136807 \\ \hline
+				 [1000000, -1, 0.5, 0.5] &  [10940, 1990] & [4575, 4874, 3481] & [5013, 3342] & [9232, 1857, 1841] & 1841261 & -0.877  & 0.622  & 0.625  & 377167 \\ \hline
+				 [1000000, 0.5, -1, 0.5] &  [10880, 2030] & [4555, 4888, 3467] & [5013, 3342] & [2258, 8354, 2298] & 1837809 & 0.540  & -0.699  & 0.532  & -36071 \\ \hline
+				 [1000000, 0.5, 0.5, -1] &  [10970, 1970] & [4585, 4867, 3488] & [5013, 3342] & [4184, 4172, 4584] & 1842861 & 0.149  & 0.151  & 0.067  & -9557\\ \hline
+				 [1000000, -1, -1, 1] &  [11000, 1950] & [4595, 4860, 3495] & [5013, 3342] & [4598, 8352, 0] & 1844461 & 0.064  & -0.6986  & 1  & 178825 \\ \hline
+				 [1000000, -2, 0, -1] &  [10850, 2050] & [4545, 4895, 3460] & [5013, 3342] & [9771, 1, 3128] & 1836129 & -0.987  & 0.9998  & 0.363 & 362610 \\ \hline
+				 
+			    \end{tabular}
+			\end{center}
+
+			Dla zadanych parametrów modelu zawsze opłaca się kierować półprodukty do uwodornienia. Największy zysk zakład uzyskuje produkując P1 kosztem niedoborów innych produktów. Najbardziej nieopłacalnym jest produkt P3.
+
+		\end{landscape}
+
 \end{document}
